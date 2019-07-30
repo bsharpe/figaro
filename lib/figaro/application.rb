@@ -72,12 +72,12 @@ module Figaro
       non_string_configuration!(key) unless key.is_a?(String)
       non_string_configuration!(value) unless value.is_a?(String) || value.nil?
 
-      ::ENV[key.to_s] = value.nil? ? nil : value.to_s
-      ::ENV[FIGARO_ENV_PREFIX + key.to_s] = value.nil? ? nil: value.to_s
+      ::ENV["#{key}"] = value&.to_s
+      ::ENV["#{FIGARO_ENV_PREFIX}#{key}"] = value&.to_s
     end
 
     def skip?(key)
-      ::ENV.key?(key.to_s) && !::ENV.key?(FIGARO_ENV_PREFIX + key.to_s)
+      ::ENV.key?("#{key}") && !::ENV.key?("#{FIGARO_ENV_PREFIX}#{key}")
     end
 
     def non_string_configuration!(value)
