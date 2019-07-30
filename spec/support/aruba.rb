@@ -1,19 +1,31 @@
+require 'rspec/core'
 require "aruba/api"
 
 module ArubaHelpers
   def insert_into_file_after(file, pattern, addition)
-    content = prep_for_fs_check { IO.read(file) }
+    path = File.join(expand_path('.'),file)
+    content = IO.read(path)
     content.sub!(pattern, "\\0\n#{addition}")
-    overwrite_file(file, content)
+    open(path, 'w') do |f|
+      f << content
+    end
   end
 end
 
-RSpec.configure do |config|
-  config.include(Aruba::Api)
-  config.include(ArubaHelpers)
+Aruba.configure do |config|
+  config.command_search_paths = config.command_search_paths << File.join(File.dirname(__FILE__),'bin')
+end
 
-  config.before do
-    @aruba_timeout_seconds = 60
-    FileUtils.rm_rf(current_dir)
+RSpec.configure do |config|
+  config.filter_run focus: true
+
+  config.run_all_when_everything_filtered = true
+
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
   end
+
+  config.include Aruba::Api
+  config.include ArubaHelpers
+  config.before(:each) { setup_aruba }
 end

@@ -3,7 +3,7 @@ describe Figaro::ENV do
 
   before do
     ::ENV["HELLO"] = "world"
-    ::ENV["foo"] = "bar"
+    ::ENV["FOO"] = "bar"
   end
 
   describe "#method_missing" do
@@ -54,7 +54,7 @@ describe Figaro::ENV do
       end
 
       it "respects a stubbed plain method" do
-        allow(env).to receive(:bar) { "baz" }
+        allow(env).to receive(:BAR) { "baz" }
         expect { expect(env.bar!).to eq("baz") }.not_to raise_error
       end
     end
@@ -80,7 +80,7 @@ describe Figaro::ENV do
       end
 
       it "respects a stubbed plain method" do
-        allow(env).to receive(:bar) { "baz" }
+        allow(env).to receive(:BAR) { "baz" }
         expect(env.bar?).to eq(true)
       end
     end
